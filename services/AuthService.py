@@ -3,9 +3,13 @@ from models.schemas import UserCreate, UserLogin
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from jose import jwt
+from exceptions.CustomExceptions import ConfigurationError
 import os
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+if not JWT_SECRET_KEY:
+    raise ConfigurationError("JWT_SECRET_KEY is not set in the environment variables.")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
