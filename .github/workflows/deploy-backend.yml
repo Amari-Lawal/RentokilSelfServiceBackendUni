@@ -58,4 +58,4 @@ jobs:
           flags: '--allow-unauthenticated'
           env_vars: |
             DATABASE_URL=sqlite:///./app.db
-            JWT_SECRET_KEY=${{ secrets.BACKEND_JWT_SECRET_KEY }}
+            JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
