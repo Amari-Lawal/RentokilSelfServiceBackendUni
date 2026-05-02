@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 from jose import jwt
 import os
 
-SECRET_KEY = os.getenv("SECRET_KEY", "rentokil_super_secret_key_123")
+JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
@@ -35,7 +35,7 @@ class AuthService:
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expire = datetime.utcnow() + access_token_expires
         to_encode = {"sub": user.username, "exp": expire}
-        encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
         
         return {
             "access_token": encoded_jwt, 
@@ -45,7 +45,7 @@ class AuthService:
 
     def get_current_user(self, token: str):
         try:
-            payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
             username: str = payload.get("sub")
             if username is None:
                 raise HTTPException(status_code=401, detail="Could not validate credentials")

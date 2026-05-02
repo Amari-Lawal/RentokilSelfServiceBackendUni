@@ -21,12 +21,12 @@ COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-COPY --chown=user . /home/user/blustorymicroservices/BluStoryAccounts/
+WORKDIR /app
+COPY --chown=user . .
 
 # Set PYTHONPATH so Python can find the top-level package
-ENV PYTHONPATH=/home/user
-WORKDIR /home/user/blustorymicroservices/BluStoryAccounts
+ENV PYTHONPATH=/app
 
 EXPOSE 8080
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080", "--reload"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
