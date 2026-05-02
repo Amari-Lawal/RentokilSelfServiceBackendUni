@@ -15,12 +15,12 @@ class UserRepository:
     def get_user(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def create_user(self, user: UserCreate):
+    def create_user(self, user: UserCreate, is_admin: bool = False):
         hashed_password = pwd_context.hash(user.password)
         db_user = User(
             username=user.username,
             password_hash=hashed_password,
-            is_admin=user.is_admin
+            is_admin=is_admin
         )
         self.db.add(db_user)
         self.db.commit()

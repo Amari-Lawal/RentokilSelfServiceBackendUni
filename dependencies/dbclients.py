@@ -11,6 +11,28 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db():
     Base.metadata.create_all(bind=engine)
+    db = SessionLocal()
+    try:
+        from models.database import User
+        from passlib.context import CryptContext
+        pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+        
+        admin = db.query(User).filter(User.username == "admin").first()
+        hashed_pw = pwd_context.hash("adminpassword123")
+        if not admin:
+            admin_user = User(
+                username="admin",
+                password_hash=hashed_pw,
+                is_admin=True
+            )
+            db.add(admin_user)
+        else:
+            # For POC, ensure password and admin status are reset to default
+            admin.password_hash = hashed_pw
+            admin.is_admin = True
+        db.commit()
+    finally:
+        db.close()
 
 def get_db():
     db = SessionLocal()

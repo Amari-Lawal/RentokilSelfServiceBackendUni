@@ -17,7 +17,15 @@ class AuthService:
         existing_user = self.user_repo.get_user_by_username(user_data.username)
         if existing_user:
             raise HTTPException(status_code=400, detail="Username already registered")
-        return self.user_repo.create_user(user_data)
+        return self.user_repo.create_user(user_data, is_admin=False)
+
+    def create_admin(self, user_data: UserCreate):
+        # This will be protected by an admin-only route in the router
+        existing_user = self.user_repo.get_user_by_username(user_data.username)
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Username already registered")
+            
+        return self.user_repo.create_user(user_data, is_admin=True)
 
     def authenticate(self, user_data: UserLogin):
         user = self.user_repo.get_user_by_username(user_data.username)

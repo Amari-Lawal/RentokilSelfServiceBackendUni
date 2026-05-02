@@ -6,7 +6,6 @@ from datetime import datetime
 class UserCreate(BaseModel):
     username: str
     password: str
-    is_admin: bool = False
 
 class UserLogin(BaseModel):
     username: str
@@ -42,6 +41,7 @@ class AppointmentUpdate(BaseModel):
 class AppointmentResponse(AppointmentBase):
     id: int
     user_id: int
+    creator_username: Optional[str] = None
     status: str
     created_at: datetime
     

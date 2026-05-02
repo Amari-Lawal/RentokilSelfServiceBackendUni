@@ -59,14 +59,14 @@ def test_read_appointments(test_user):
 def test_update_appointment(test_user):
     token = test_user["access_token"]
     update_data = {
-        "insect_type": "Bed Bugs",
-        "status": "Confirmed"
+        "insect_type": "Bed Bugs"
     }
     response = client.put(f"/appointments/{pytest.appt_id}", json=update_data, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
     assert data["insect_type"] == "Bed Bugs"
-    assert data["status"] == "Confirmed"
+    # Status should remain Pending for regular users
+    assert data["status"] == "Pending"
 
 def test_delete_appointment(test_user):
     token = test_user["access_token"]

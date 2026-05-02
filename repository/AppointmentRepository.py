@@ -7,13 +7,21 @@ class AppointmentRepository:
         self.db = db
 
     def get_appointment(self, appointment_id: int):
-        return self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        appt = self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        return self._attach_username(appt)
+
+    def _attach_username(self, appt):
+        if appt and appt.user:
+            appt.creator_username = appt.user.username
+        return appt
 
     def get_appointments_by_user(self, user_id: int):
-        return self.db.query(Appointment).filter(Appointment.user_id == user_id).all()
+        appts = self.db.query(Appointment).filter(Appointment.user_id == user_id).all()
+        return [self._attach_username(a) for a in appts]
 
     def get_all_appointments(self):
-        return self.db.query(Appointment).all()
+        appts = self.db.query(Appointment).all()
+        return [self._attach_username(a) for a in appts]
 
     def create_appointment(self, user_id: int, appointment: AppointmentCreate):
         db_appointment = Appointment(
@@ -23,7 +31,7 @@ class AppointmentRepository:
         self.db.add(db_appointment)
         self.db.commit()
         self.db.refresh(db_appointment)
-        return db_appointment
+        return self._attach_username(db_appointment)
 
     def update_appointment(self, appointment_id: int, appointment: AppointmentUpdate):
         db_appointment = self.get_appointment(appointment_id)
@@ -33,7 +41,7 @@ class AppointmentRepository:
                 setattr(db_appointment, key, value)
             self.db.commit()
             self.db.refresh(db_appointment)
-        return db_appointment
+        return self._attach_username(db_appointment)
 
     def delete_appointment(self, appointment_id: int):
         db_appointment = self.get_appointment(appointment_id)
