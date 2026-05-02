@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from routers import auth, appointments
+from routers import auth, appointments, insects, locations
 from dependencies.dbclients import init_db
 import logging
 
@@ -26,6 +26,8 @@ init_db()
 
 app.include_router(auth.router)
 app.include_router(appointments.router)
+app.include_router(insects.router)
+app.include_router(locations.router)
 
 @app.get("/health")
 async def health_check():

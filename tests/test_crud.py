@@ -33,15 +33,16 @@ def test_create_appointment(test_user):
     appt_data = {
         "date": "2026-10-15",
         "time": "14:00",
-        "insect_type": "Ants",
-        "location": "456 Test Ave",
+        "insect_id": 1,
+        "door_number": "10",
+        "road_name": "Test Lane",
+        "postcode": "M11AA",
         "notes": "Testing crud"
     }
     response = client.post("/appointments/", json=appt_data, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
-    assert data["insect_type"] == "Ants"
-    assert data["location"] == "456 Test Ave"
+    assert data["insect_id"] == 1
     assert "id" in data
     
     # Save id for other tests
@@ -59,12 +60,12 @@ def test_read_appointments(test_user):
 def test_update_appointment(test_user):
     token = test_user["access_token"]
     update_data = {
-        "insect_type": "Bed Bugs"
+        "insect_id": 2
     }
     response = client.put(f"/appointments/{pytest.appt_id}", json=update_data, headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 200
     data = response.json()
-    assert data["insect_type"] == "Bed Bugs"
+    assert data["insect_id"] == 2
     # Status should remain Pending for regular users
     assert data["status"] == "Pending"
 

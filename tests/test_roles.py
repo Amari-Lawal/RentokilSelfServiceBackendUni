@@ -34,7 +34,7 @@ def admin_token():
 
 def test_user_cannot_update_status(user_token):
     # 1. Create appointment
-    appt_data = {"date": "2026-01-01", "time": "10:00", "insect_type": "Ants", "location": "Home"}
+    appt_data = {"date": "2027-01-01", "time": "10:00", "insect_id": 1, "door_number": "1", "road_name": "Main St", "postcode": "EC1A1BB"}
     res = client.post("/appointments/", json=appt_data, headers={"Authorization": f"Bearer {user_token}"})
     appt_id = res.json()["id"]
     
@@ -47,7 +47,7 @@ def test_user_cannot_update_status(user_token):
 
 def test_admin_can_update_status_only(admin_token, user_token):
     # 1. User creates appointment
-    appt_data = {"date": "2026-01-01", "time": "10:00", "insect_type": "Ants", "location": "Home"}
+    appt_data = {"date": "2027-01-01", "time": "10:00", "insect_id": 1, "door_number": "1", "road_name": "Main St", "postcode": "EC1A1BB"}
     res = client.post("/appointments/", json=appt_data, headers={"Authorization": f"Bearer {user_token}"})
     appt_id = res.json()["id"]
     
@@ -71,7 +71,7 @@ def test_cross_user_access_blocked(user_token):
     res = client.post("/auth/login", json={"username": user_b_name, "password": "password"})
     token_b = res.json()["access_token"]
     
-    appt_data = {"date": "2026-01-01", "time": "10:00", "insect_type": "Ants", "location": "Home"}
+    appt_data = {"date": "2027-01-01", "time": "10:00", "insect_id": 1, "door_number": "1", "road_name": "Main St", "postcode": "EC1A1BB"}
     res = client.post("/appointments/", json=appt_data, headers={"Authorization": f"Bearer {token_b}"})
     appt_b_id = res.json()["id"]
     
