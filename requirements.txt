@@ -1,29 +1,10 @@
-# --- Core FastAPI stack ---
 fastapi
 uvicorn
+sqlalchemy
+pydantic
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt<=4.0.0
 python-multipart
-pydantic[email]
-# --- Data / Image handling ---
-
-opencv-python-headless==4.13.0.92
-Pillow==12.1.1
-qrcode==7.4.2
-
-# --- Config & Auth ---
-python-dotenv==1.0.0
-PyJWT==2.8.0
-
-# --- Google Cloud ---
-google-cloud-storage==3.9.0
-packaging==26.0
-
-supabase
-psycopg2-binary
-bcrypt
-
-# -- Testing ---
 pytest
 httpx
-# --- Dependencies pinned by FastAPI (auto-installed) ---
-# pydantic, starlette, anyio, h11, sniffio, typing-extensions
-# You don’t need to list them unless you want strict version control

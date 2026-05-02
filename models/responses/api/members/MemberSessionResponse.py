@@ -1,7 +1,0 @@
-
-from pydantic import BaseModel
-from gotrue.types import Session
-from blustorymicroservices.BluStoryAccounts.models.responses.api.members.MemberResponse import MemberResponse
-class MemberSessionResponse(BaseModel):
-    member: MemberResponse
-    session: Session

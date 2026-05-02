@@ -21,7 +21,7 @@ COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir --upgrade pip && \
     pip install --no-cache-dir -r requirements.txt
 
-COPY . /home/user/blustorymicroservices/BluStoryAccounts/
+COPY --chown=user . /home/user/blustorymicroservices/BluStoryAccounts/
 
 # Set PYTHONPATH so Python can find the top-level package
 ENV PYTHONPATH=/home/user
