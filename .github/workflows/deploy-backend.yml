@@ -7,7 +7,7 @@ on:
       - dev
       - test
     paths:
-      - '**' # Triggers on changes to any file (ensures it actually runs)
+      - '**' 
       - '.github/workflows/deploy-backend.yml'
 
 concurrency:
@@ -18,12 +18,16 @@ env:
   PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
   REGION: europe-west1
   REPOSITORY: rentokil-registry
-  # Logic to set 'prod' for main, otherwise use branch name
+  # Logic to set 'prod' for main, otherwise use branch name (dev/test)
   ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    # FIXED: This line tells GitHub to look into the "dev" environment secrets 
+    # when the branch is not 'main'.
+    environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,6 +35,7 @@ jobs:
       - name: Google Auth
         uses: 'google-github-actions/auth@v2'
         with:
+          # This will now correctly find the secret from the 'dev' environment
           credentials_json: '${{ secrets.GCP_SA_KEY }}'
 
       - name: Set up Cloud SDK
@@ -44,7 +49,6 @@ jobs:
           SERVICE_NAME="rentokil-backend-uni-${{ env.ENV_NAME }}"
           IMAGE_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${SERVICE_NAME}:${{ github.sha }}"
           
-          # Changed context from ./RentokilSelfServiceBackendUni to .
           docker build -t "$IMAGE_TAG" . 
           docker push "$IMAGE_TAG"
 
@@ -54,7 +58,6 @@ jobs:
           service: rentokil-backend-uni-${{ env.ENV_NAME }}
           region: ${{ env.REGION }}
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/rentokil-backend-uni-${{ env.ENV_NAME }}:${{ github.sha }}
-          # Added flags to allow public access if this is a web API
           flags: '--allow-unauthenticated'
           env_vars: |
             DATABASE_URL=sqlite:///./app.db
