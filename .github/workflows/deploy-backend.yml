@@ -24,8 +24,6 @@ env:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    # FIXED: This line tells GitHub to look into the "dev" environment secrets 
-    # when the branch is not 'main'.
     environment: ${{ github.ref_name == 'main' && 'prod' || 'dev' }}
     
     steps:
