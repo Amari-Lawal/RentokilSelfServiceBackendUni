@@ -1,0 +1,61 @@
+name: Deploy Backend to Cloud Run
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+      - test
+    paths:
+      - '**' # Triggers on changes to any file (ensures it actually runs)
+      - '.github/workflows/deploy-backend.yml'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+  REGION: europe-west1
+  REPOSITORY: rentokil-registry
+  # Logic to set 'prod' for main, otherwise use branch name
+  ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Google Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+      - name: Authorize Docker
+        run: gcloud auth configure-docker ${{ env.REGION }}-docker.pkg.dev
+
+      - name: Build and Push Container
+        run: |-
+          SERVICE_NAME="rentokil-backend-uni-${{ env.ENV_NAME }}"
+          IMAGE_TAG="${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/${SERVICE_NAME}:${{ github.sha }}"
+          
+          # Changed context from ./RentokilSelfServiceBackendUni to .
+          docker build -t "$IMAGE_TAG" . 
+          docker push "$IMAGE_TAG"
+
+      - name: Deploy to Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v2'
+        with:
+          service: rentokil-backend-uni-${{ env.ENV_NAME }}
+          region: ${{ env.REGION }}
+          image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/rentokil-backend-uni-${{ env.ENV_NAME }}:${{ github.sha }}
+          # Added flags to allow public access if this is a web API
+          flags: '--allow-unauthenticated'
+          env_vars: |
+            DATABASE_URL=sqlite:///./app.db
+            JWT_SECRET_KEY=${{ secrets.BACKEND_JWT_SECRET_KEY }}
