@@ -125,7 +125,9 @@ class CaesarCRUD:
     def hex_to_base64(self, hex_file: bytes):  # x0 unicode-like hex
         return base64.b64encode(bytes.fromhex(hex_file.hex())).decode()
 
-    def get_large_data(self, fields: tuple, table: str, condition: Optional[str] = None):
+    def get_large_data(
+        self, fields: tuple, table: str, condition: Optional[str] = None
+    ):
 
         if len(fields) != 1:
             fieldlist = [f"{field}" for field in fields]
