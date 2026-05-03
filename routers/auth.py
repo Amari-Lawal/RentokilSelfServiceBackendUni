@@ -1,3 +1,4 @@
+import os
 from fastapi import APIRouter, Depends, Response
 from models.schemas import UserCreate, UserLogin, UserResponse, Token
 from services.AuthService import AuthService
@@ -5,6 +6,9 @@ from dependencies.services import get_auth_service, get_current_admin_user
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
+# Detect environment for cookie security
+ENV = os.getenv("ENVIRONMENT", "development")
+IS_PROD = ENV != "development"
 
 @router.post("/register", response_model=UserResponse)
 def register(user: UserCreate, auth_service: AuthService = Depends(get_auth_service)):
@@ -31,8 +35,8 @@ def login(
         key="access_token",
         value=token_data.access_token,
         httponly=True,
-        secure=False,  # Set to True in production with HTTPS
-        samesite="lax",
+        secure=IS_PROD,
+        samesite="none" if IS_PROD else "lax",
     )
     return token_data
 
@@ -40,6 +44,9 @@ def login(
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie(
-        key="access_token", httponly=True, secure=False, samesite="lax"
+        key="access_token", 
+        httponly=True, 
+        secure=IS_PROD, 
+        samesite="none" if IS_PROD else "lax"
     )
     return {"message": "Logged out successfully"}
