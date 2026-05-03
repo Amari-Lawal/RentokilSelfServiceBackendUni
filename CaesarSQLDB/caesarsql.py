@@ -5,6 +5,7 @@ from typing import Any, Callable, Optional, Union
 from urllib.parse import urlparse
 
 import psycopg
+from psycopg import sql
 
 
 class CaesarSQL:
@@ -75,7 +76,7 @@ class CaesarSQL:
 
     def run_command(
         self,
-        sqlcommand: Optional[str] = None,
+        sqlcommand: Optional[Union[str, sql.Composed]] = None,
         result_function: Optional[Callable] = None,
         datatuple: Optional[tuple] = None,
         filename: Optional[str] = None,
@@ -113,7 +114,7 @@ class CaesarSQL:
 
     def run_command_generator(
         self,
-        sqlcommand: Optional[str] = None,
+        sqlcommand: Optional[Union[str, sql.Composed]] = None,
         arraysize: int = 1000,
         datatuple: Optional[tuple] = None,
         filename: Optional[str] = None,
