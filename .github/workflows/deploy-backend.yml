@@ -47,7 +47,7 @@ jobs:
         run: mypy . --ignore-missing-imports
 
       - name: Run Tests (Pytest)
-        run: pytest
+        run: python -m pytest
 
   # --- JOB 2: DEPLOYMENT ---
   deploy:
