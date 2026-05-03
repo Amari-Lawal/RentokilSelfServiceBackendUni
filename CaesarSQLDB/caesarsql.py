@@ -11,12 +11,17 @@ from psycopg import sql
 class CaesarSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
+        import os
 
-        conStr = "postgres://postgres.ngvbvmbaeujkldkcqcgx:RbayPHbgAIQh7khk@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+        conStr = os.getenv("DATABASE_URL")
+        if not conStr or conStr.startswith("sqlite"):
+            # Fallback for local dev or if no DB is provided
+            conStr = "postgres://postgres.ngvbvmbaeujkldkcqcgx:RbayPHbgAIQh7khk@aws-0-eu-central-1.pooler.supabase.com:5432/postgres"
+
         p = urlparse(conStr)
 
         pg_connection_dict = {
-            "dbname": p.scheme,
+            "dbname": p.path[1:] if p.path else "postgres",
             "user": p.username,
             "password": p.password,
             "port": p.port,

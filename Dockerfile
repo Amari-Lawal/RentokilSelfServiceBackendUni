@@ -19,8 +19,6 @@ RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 RUN useradd -m -u 1000 user
 
 # Copy and install requirements
-# We copy as root but install as user if we want, OR just install everything as root and use the user for running.
-# Best practice is to install as root (system-wide) but RUN as user.
 WORKDIR /app
 COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
@@ -34,4 +32,5 @@ ENV PYTHONPATH=/app
 USER user
 EXPOSE 8080
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
+# Use the PORT environment variable provided by Cloud Run
+CMD ["sh", "-c", "uvicorn main:app --host 0.0.0.0 --port ${PORT:-8080}"]
