@@ -18,7 +18,7 @@ env:
   ENV_NAME: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
 
 jobs:
-  # --- JOB 1: CODE QUALITY & TESTING ---
+  # --- JOB 1: CODE QUALITY & SECURITY SCAN ---
   quality-check:
     runs-on: ubuntu-latest
     env:
@@ -26,22 +26,37 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Gitleaks needs history to scan for leaked secrets
 
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-          cache: 'pip' # Speeds up subsequent runs by caching dependencies
+          cache: 'pip'
 
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pytest mypy httpx  # httpx is recommended for FastAPI testing
+          pip install ruff pytest mypy httpx bandit safety
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      # --- SECURITY EXTRA 1: Secret Scanning ---
+      - name: Gitleaks Scan
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # --- SECURITY EXTRA 2: SAST (Bandit) ---
+      - name: Security Lint (Bandit)
+        run: bandit -r . -x ./tests -ll # Skips tests, reports Med/High issues
+
+      # --- SECURITY EXTRA 3: SCA (Safety) ---
+      - name: Dependency Check (Safety)
+        run: safety check
 
       - name: Lint and Format Check (Ruff)
         run: |
-          # 'check' looks for bugs; 'format --check' ensures code style is consistent
           ruff check .
           ruff format --check .
 
@@ -51,10 +66,31 @@ jobs:
       - name: Run Tests (Pytest)
         run: python -m pytest
 
-  # --- JOB 2: DEPLOYMENT ---
+  # --- JOB 2: CONTAINER SECURITY (Trivy) ---
+  container-security:
+    runs-on: ubuntu-latest
+    needs: quality-check
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Local Image for Scanning
+        run: docker build -t local-scan-target:${{ github.sha }} .
+
+      # --- SECURITY EXTRA 4: Container Scanning ---
+      - name: Scan Image (Trivy)
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'local-scan-target:${{ github.sha }}'
+          format: 'table'
+          exit-code: '1' # Fails the build if vulnerabilities are found
+          ignore-unfixed: true
+          severity: 'CRITICAL,HIGH'
+
+  # --- JOB 3: DEPLOYMENT ---
   deploy:
     runs-on: ubuntu-latest
-    needs: quality-check # This ensures deploy only runs if quality-check passes
+    needs: [quality-check, container-security] # Must pass both code and container checks
     environment: ${{ github.ref_name == 'main' && 'prod' || github.ref_name }}
     
     steps:
