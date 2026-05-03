@@ -1,4 +1,3 @@
-import operator
 from typing import ClassVar
 
 from pydantic import BaseModel

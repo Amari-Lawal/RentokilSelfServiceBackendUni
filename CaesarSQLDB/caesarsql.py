@@ -34,7 +34,7 @@ class CaesarSQL:
                 return False
             else:
                 return True
-        except Exception as poe:
+        except Exception:
             return False
         
     def load_json_file(self,filename:str):
@@ -49,11 +49,11 @@ class CaesarSQL:
     
     def json_to_sql(self,datajson :Union[dict,list]):
         # Converts JSON to SQL.
-        if type(datajson) == list: 
+        if isinstance(datajson, list):
             columns = str(tuple(datajson[0].keys())).replace("'","")
             values = str(tuple(tuple(data.values())  for data in datajson))[1:-1]
             return columns,values
-        elif type(datajson) == dict:
+        elif isinstance(datajson, dict):
             columns = str(tuple(datajson.keys())).replace("'","")
             values = str(tuple(datajson.values())).replace("'","")
             return columns,values
@@ -81,10 +81,10 @@ class CaesarSQL:
             #if self.connection.is_connected():
             #    db_Info = self.connection.get_server_info()
             #    print("Connected to MySQL Server version ", db_Info)
-        if sqlcommand == None and filename == None:
+        if sqlcommand is None and filename is None:
             print("Please input an SQL command or SQL filename.")
         else:
-            if filename != None:
+            if filename is not None:
                with open(filename) as f:
                    sqlcommand = f.read()
             
@@ -95,9 +95,9 @@ class CaesarSQL:
                 result = cursor.fetchall()
                     
                 
-                if result_function != None:
+                if result_function is not None:
                     new_result = result_function(result)
-                elif result_function == None:
+                elif result_function is None:
                     new_result = None
 
                 #self.connection.commit()
@@ -114,10 +114,10 @@ class CaesarSQL:
             #if self.connection.is_connected():
             #    db_Info = self.connection.get_server_info()
             #    print("Connected to MySQL Server version ", db_Info)
-        if sqlcommand == None and filename == None:
+        if sqlcommand is None and filename is None:
             print("Please input an SQL command or SQL filename.")
         else:
-            if filename != None:
+            if filename is not None:
                with open(filename) as f:
                    sqlcommand = f.read()
             try:

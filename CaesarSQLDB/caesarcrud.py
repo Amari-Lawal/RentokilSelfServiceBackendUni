@@ -10,11 +10,11 @@ class CaesarCRUD:
         self.caesarsql = CaesarSQL()
  
     def create_table(self,primary_key:str,fields:tuple,types :tuple,table: str):
-        if type(fields) == tuple:
+        if isinstance(fields, tuple):
             fieldlist = [f"{field} {typestr}"for field,typestr in zip(fields,types)]
             fieldstr = ', '.join(fieldlist)
             try:
-                result = self.caesarsql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({primary_key} serial PRIMARY KEY,{fieldstr});",self.caesarsql.fetch)
+                self.caesarsql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({primary_key} serial PRIMARY KEY,{fieldstr});",self.caesarsql.fetch)
             except ProgrammingError as pex:
                 if "the last operation didn't produce records" in str(pex):
                     return {"message":f"{table} table was created."}
@@ -25,7 +25,7 @@ class CaesarCRUD:
         else:
             fieldstr = f"{fields} {types}"
             try:
-                result = self.caesarsql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({primary_key} serial PRIMARY KEY,{fieldstr});",self.caesarsql.fetch)
+                self.caesarsql.run_command(f"CREATE TABLE IF NOT EXISTS {table} ({primary_key} serial PRIMARY KEY,{fieldstr});",self.caesarsql.fetch)
             except ProgrammingError as pex:
                 if "the last operation didn't produce records" in str(pex):
                     return {"message":f"{table} table was created."}
@@ -57,13 +57,13 @@ class CaesarCRUD:
 
 
     def tuple_to_json(self,fields:tuple,result:tuple):
-        if type(result[0]) == tuple:
+        if isinstance(result[0], tuple):
             final_result = []
             for entry in result:
                 entrydict = dict(zip(fields,entry))
                 final_result.append(entrydict)
             return final_result
-        elif type(result[0]) == str:
+        elif isinstance(result[0], str):
             final_result = dict(zip(fields,result))
             return final_result 
         
@@ -88,20 +88,20 @@ class CaesarCRUD:
             result = self.caesarsql.run_command(f"""SELECT {fieldstr} FROM {table} WHERE {condition} LIMIT {str(getamount)};""",self.caesarsql.fetch)
             if len(result) == 0:
                 return False
-            elif len(result) != 0 and type(result) == list:
+            elif len(result) != 0 and isinstance(result, list):
                 result = self.tuple_to_json(fields,result)
                 return result
             else:
-                return {"error":"error syntax error.","error":result}
+                return {"message": "syntax error.", "error": result}
         else:
             result = self.caesarsql.run_command(f"""SELECT {fieldstr} FROM {table} LIMIT {str(getamount)};""",self.caesarsql.fetch)
             if len(result) == 0:
                 return False
-            elif len(result) != 0 and type(result) == list:
+            elif len(result) != 0 and isinstance(result, list):
                 result = self.tuple_to_json(fields,result)
                 return result
             else:
-                return {"error":"error syntax error.","error":result}
+                return {"message": "syntax error.", "error": result}
     def hex_to_base64(self,hex_file:bytes): # x0 unicode-like hex
         return  base64.b64encode(bytes.fromhex(hex_file.hex())).decode()
     def get_large_data(self,fields:tuple,table:str,condition=None):
@@ -126,7 +126,7 @@ class CaesarCRUD:
         if len(fieldstoupdate) > 1:
             updatelist = []
             for field,value in zip(fieldstoupdate,values):
-                if type(value) != str:
+                if not isinstance(value, str):
                     fieldstr = f"{field} = {value}"
                     updatelist.append(fieldstr)
 
@@ -141,7 +141,7 @@ class CaesarCRUD:
             else:
                 return False
         else:          
-            if type(values[0]) != str:
+            if not isinstance(values[0], str):
                 updatestr = f"{fieldstoupdate[0]} = {values[0]}"
             else:
                 value = values[0].replace("'","''",1000000)
@@ -178,14 +178,14 @@ class CaesarCRUD:
         if condition:
             #print(f"""SELECT {fieldstr} FROM {table} WHERE {condition};""")
             result = self.caesarsql.run_command(f"""SELECT {fieldstr} FROM {table} WHERE {condition};""",self.caesarsql.check_exists)
-            if result == True or result == False:
+            if result is True or result is False:
                 return result
             else:
                 return {"message":"syntax error or table doesn't exist.","error":result}
                 
         else:
             result = self.caesarsql.run_command(f"""SELECT {fieldstr} FROM {table};""",self.caesarsql.check_exists)
-            if result == True or result == False:
+            if result is True or result is False:
                 return result
             else:
                 return {"message":"syntax error or table doesn't exist.","error":result}

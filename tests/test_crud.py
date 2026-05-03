@@ -2,7 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 from main import app
 from models.database import Base
-from dependencies.dbclients import engine, SessionLocal
+from dependencies.dbclients import engine
 
 # Setup test database
 Base.metadata.create_all(bind=engine)

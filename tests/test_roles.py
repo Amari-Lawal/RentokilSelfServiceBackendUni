@@ -1,5 +1,6 @@
 import pytest
 from fastapi.testclient import TestClient
+import time
 from main import app
 from models.database import Base
 from dependencies.dbclients import engine
@@ -8,7 +9,6 @@ from dependencies.dbclients import engine
 Base.metadata.create_all(bind=engine)
 client = TestClient(app)
 
-import time
 
 @pytest.fixture
 def user_token():

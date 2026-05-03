@@ -3,7 +3,7 @@ from typing import List
 from models.schemas import AppointmentCreate, AppointmentUpdate, AppointmentResponse
 from services.AppointmentService import AppointmentService
 from models.database import User
-from dependencies.services import get_appointment_service, get_current_user, get_current_admin_user
+from dependencies.services import get_appointment_service, get_current_user
 
 router = APIRouter(prefix="/appointments", tags=["appointments"])
 

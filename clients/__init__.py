@@ -1,1 +1,1 @@
-from .api.OrganisationClient import OrganisationClient
+from .api.OrganisationClient import OrganisationClient as OrganisationClient
