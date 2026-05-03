@@ -23,7 +23,7 @@ class CaesarCRUD:
                 if "the last operation didn't produce records" in str(pex):
                     return {"message": f"{table} table was created."}
                 else:
-                    raise ProgrammingError(pex)
+                    raise pex
 
         else:
             fieldstr = f"{fields} {types}"
@@ -36,7 +36,7 @@ class CaesarCRUD:
                 if "the last operation didn't produce records" in str(pex):
                     return {"message": f"{table} table was created."}
                 else:
-                    raise ProgrammingError(pex)
+                    raise pex
 
     def base64_to_hex(self, value):
         value = value.encode()

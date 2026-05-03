@@ -23,7 +23,7 @@ class CaesarSQL:
             "autocommit": True,
         }
 
-        self.connection = psycopg.connect(**pg_connection_dict)
+        self.connection = psycopg.connect(**pg_connection_dict)  # type: ignore
 
     def check_exists(self, result: Any):
         # Checks if an entity exists from an SQL Command.
@@ -59,10 +59,9 @@ class CaesarSQL:
             print("JSON is invalid data shape.")
             return None, None
 
-    def executeScriptsFromFile(self, filename):
-        fd = open(filename, "r")
-        sqlFile = fd.read()
-        fd.close()
+    def executeScriptsFromFile(self, filename: str):
+        with open(filename, "r") as fd:
+            sqlFile = fd.read()
         sqlCommands = sqlFile.split(";")
         print(sqlCommands)
         with self.connection.cursor() as cursor:
@@ -71,7 +70,7 @@ class CaesarSQL:
                     if command.strip() != "":
                         print(command)
                         cursor.execute(command.replace("\n", "").replace("\n", ""))
-                except IOError as ex:
+                except Exception as ex:
                     print("Command skipped: ", type(ex), ex)
 
     def run_command(
@@ -95,7 +94,7 @@ class CaesarSQL:
                     sqlcommand = f.read()
 
             with self.connection.cursor() as cursor:
-                # print(datatuple)
+                assert sqlcommand is not None
                 cursor.execute(sqlcommand, datatuple)
 
                 result = cursor.fetchall()
@@ -133,7 +132,7 @@ class CaesarSQL:
                     sqlcommand = f.read()
             try:
                 with self.connection.cursor() as cursor:
-                    # print(datatuple)
+                    assert sqlcommand is not None
                     cursor.execute(sqlcommand, datatuple)
                     if verbose == 1:
                         print("SQL command executed.")
