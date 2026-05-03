@@ -9,17 +9,19 @@ from fastapi.security import OAuth2PasswordBearer
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
+
 def get_token_from_cookie(request: Request):
     # Prioritize Authorization header for testing and mobile client compatibility
     auth_header = request.headers.get("Authorization")
     if auth_header and auth_header.startswith("Bearer "):
         return auth_header.split(" ")[1]
-    
+
     token = request.cookies.get("access_token")
     if token:
         return token
-        
+
     raise HTTPException(status_code=401, detail="Not authenticated")
+
 
 def get_user_repository(db: Session = Depends(get_db)):
     return UserRepository(db)
