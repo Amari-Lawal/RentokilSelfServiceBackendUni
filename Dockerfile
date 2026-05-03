@@ -12,21 +12,26 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
-# Create non-root user early (reduces COPY layer overhead)
+# --- FIX: Upgrade core tools as ROOT to patch vulnerabilities in /usr/local ---
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+
+# Create non-root user early
 RUN useradd -m -u 1000 user
-USER user
 
 # Copy and install requirements
-COPY --chown=user requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir -r requirements.txt
-
+# We copy as root but install as user if we want, OR just install everything as root and use the user for running.
+# Best practice is to install as root (system-wide) but RUN as user.
 WORKDIR /app
+COPY --chown=user requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code
 COPY --chown=user . .
 
-# Set PYTHONPATH so Python can find the top-level package
+# Set PYTHONPATH
 ENV PYTHONPATH=/app
 
+USER user
 EXPOSE 8080
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8080"]
