@@ -7,7 +7,7 @@ import logging
 
 app = FastAPI(
     title="Rentokil Self Service API",
-    description="API for insect extermination appointments"
+    description="API for insect extermination appointments",
 )
 
 app.add_middleware(
@@ -29,9 +29,11 @@ app.include_router(appointments.router)
 app.include_router(insects.router)
 app.include_router(locations.router)
 
+
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8080)

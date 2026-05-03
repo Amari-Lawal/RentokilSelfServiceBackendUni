@@ -2,12 +2,15 @@ from sqlalchemy.orm import Session
 from models.database import Appointment
 from models.schemas import AppointmentCreate, AppointmentUpdate
 
+
 class AppointmentRepository:
     def __init__(self, db: Session):
         self.db = db
 
     def get_appointment(self, appointment_id: int):
-        appt = self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        appt = (
+            self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        )
         return self._attach_username(appt)
 
     def _attach_username(self, appt):
@@ -24,10 +27,7 @@ class AppointmentRepository:
         return [self._attach_username(a) for a in appts]
 
     def create_appointment(self, user_id: int, appointment: AppointmentCreate):
-        db_appointment = Appointment(
-            user_id=user_id,
-            **appointment.model_dump()
-        )
+        db_appointment = Appointment(user_id=user_id, **appointment.model_dump())
         self.db.add(db_appointment)
         self.db.commit()
         self.db.refresh(db_appointment)

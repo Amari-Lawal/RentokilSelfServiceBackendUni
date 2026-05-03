@@ -3,12 +3,16 @@ import string
 import secrets
 import random
 
+
 class AuthHelper:
     @staticmethod
     def create_random_username(length: int = 10) -> str:
         settings = get_settings()
         alphabet = string.ascii_lowercase + string.digits
-        return settings.operator.prefix + ''.join(secrets.choice(alphabet) for _ in range(length))
+        return settings.operator.prefix + "".join(
+            secrets.choice(alphabet) for _ in range(length)
+        )
+
     @staticmethod
     def create_random_password(length: int = 20) -> str:
         if length < 8:
@@ -28,4 +32,4 @@ class AuthHelper:
 
         random.SystemRandom().shuffle(password_list)
 
-        return ''.join(password_list)
+        return "".join(password_list)

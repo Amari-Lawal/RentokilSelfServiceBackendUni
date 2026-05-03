@@ -4,31 +4,34 @@ from datetime import datetime
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = "users"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True, nullable=False)
     password_hash = Column(String, nullable=False)
     is_admin = Column(Boolean, default=False)
 
-    appointments = relationship("Appointment", back_populates="user", cascade="all, delete-orphan")
+    appointments = relationship(
+        "Appointment", back_populates="user", cascade="all, delete-orphan"
+    )
 
 
 class Insect(Base):
     __tablename__ = "insects"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     description = Column(Text, nullable=True)
-    danger_level = Column(Integer, default=1) # 1-5
+    danger_level = Column(Integer, default=1)  # 1-5
 
     appointments = relationship("Appointment", back_populates="insect")
 
 
 class ServiceLocation(Base):
     __tablename__ = "locations"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, unique=True, nullable=False)
     region = Column(String, nullable=False)
@@ -37,7 +40,7 @@ class ServiceLocation(Base):
 
 class Appointment(Base):
     __tablename__ = "appointments"
-    
+
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     insect_id = Column(Integer, ForeignKey("insects.id"), nullable=False)

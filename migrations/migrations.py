@@ -8,7 +8,7 @@ def run_migrations():
         password=os.environ["DB_PASSWORD"],
         host=os.environ["DB_HOST"],
         port=os.environ["DB_PORT"],
-        dbname=os.environ["DB_NAME"]
+        dbname=os.environ["DB_NAME"],
     )
 
     cur = conn.cursor()

@@ -5,6 +5,7 @@ from passlib.context import CryptContext
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class UserRepository:
     def __init__(self, db: Session):
         self.db = db
@@ -18,9 +19,7 @@ class UserRepository:
     def create_user(self, user: UserCreate, is_admin: bool = False):
         hashed_password = pwd_context.hash(user.password)
         db_user = User(
-            username=user.username,
-            password_hash=hashed_password,
-            is_admin=is_admin
+            username=user.username, password_hash=hashed_password, is_admin=is_admin
         )
         self.db.add(db_user)
         self.db.commit()

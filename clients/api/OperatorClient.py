@@ -1,7 +1,9 @@
 import requests
 from uuid import UUID
 
-from blustorymicroservices.BluStoryAccounts.models.responses.api.organisations.OrganisationNameResponse import OrganisationNameResponse
+from blustorymicroservices.BluStoryAccounts.models.responses.api.organisations.OrganisationNameResponse import (
+    OrganisationNameResponse,
+)
 
 
 class OperatorClient:
@@ -12,7 +14,7 @@ class OperatorClient:
     def get_organisation_name(self, organisation_id: UUID) -> OrganisationNameResponse:
         response = requests.get(
             f"{self.base_url}/organisations/{organisation_id}",
-            headers={"Authorization": f"Bearer {self.access_token}"}
+            headers={"Authorization": f"Bearer {self.access_token}"},
         )
 
         response.raise_for_status()
