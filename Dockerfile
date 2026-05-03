@@ -15,11 +15,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # --- FIX: Upgrade core tools as ROOT to patch vulnerabilities in /usr/local ---
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
-# Create non-root user early
-RUN useradd -m -u 1000 user
+# Create non-root user and setup app directory
+RUN useradd -m -u 1000 user && \
+    mkdir -p /app && \
+    chown user:user /app
+
+WORKDIR /app
 
 # Copy and install requirements
-WORKDIR /app
 COPY --chown=user requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 

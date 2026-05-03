@@ -124,5 +124,5 @@ jobs:
           image: ${{ env.REGION }}-docker.pkg.dev/${{ env.PROJECT_ID }}/${{ env.REPOSITORY }}/rentokil-backend-uni-${{ env.ENV_NAME }}:${{ github.sha }}
           flags: '--allow-unauthenticated'
           env_vars: |
-            DATABASE_URL=sqlite:///./app.db
+            DATABASE_URL=sqlite:////home/user/app.db
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}

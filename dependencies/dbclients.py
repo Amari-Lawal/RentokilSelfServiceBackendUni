@@ -4,7 +4,7 @@ from models.database import Base
 
 import os
 
-SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./app.db")
+SQLALCHEMY_DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:////home/user/app.db")
 
 # If it's a postgres URL from Heroku or similar, it might start with postgres://
 # SQLAlchemy 1.4+ requires postgresql://
