@@ -133,7 +133,9 @@ class CaesarCRUD:
 
     def update_blob(self, fieldstoupdate: str, value: str, table: str, condition: str):
         # Note: update_blob still uses some string formatting for hex, but table/fields are safe now
-        query = sql.SQL("UPDATE {table} SET {field} = {val} WHERE {cond} RETURNING {ret}").format(
+        query = sql.SQL(
+            "UPDATE {table} SET {field} = {val} WHERE {cond} RETURNING {ret}"
+        ).format(
             table=sql.Identifier(table),
             field=sql.Identifier(fieldstoupdate),
             val=sql.SQL("x'{}'").format(sql.SQL(self.base64_to_hex(value))),
