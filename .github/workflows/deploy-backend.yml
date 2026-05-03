@@ -22,7 +22,7 @@ jobs:
   quality-check:
     runs-on: ubuntu-latest
     env:
-      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+      JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY || 'test_secret_key_for_ci_only' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

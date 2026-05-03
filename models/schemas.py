@@ -1,4 +1,4 @@
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, ConfigDict, field_validator
 from typing import Optional
 from datetime import datetime, date as date_type
 
@@ -19,8 +19,7 @@ class UserResponse(BaseModel):
     username: str
     is_admin: bool
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Insects
@@ -30,8 +29,7 @@ class InsectResponse(BaseModel):
     description: Optional[str] = None
     danger_level: int
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 # Locations
@@ -40,8 +38,7 @@ class LocationResponse(BaseModel):
     name: str
     region: str
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
 class AppointmentBase(BaseModel):
