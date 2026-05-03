@@ -1,5 +1,5 @@
 import base64
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, List, Optional, Union
 
 from psycopg import ProgrammingError
 
