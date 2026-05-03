@@ -127,3 +127,4 @@ jobs:
           env_vars: |
             DATABASE_URL=sqlite:///app.db
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
+            ENVIRONMENT=${{ env.ENV_NAME }}
