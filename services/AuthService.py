@@ -1,5 +1,5 @@
 from repository.UserRepository import UserRepository
-from models.schemas import UserCreate, UserLogin
+from models.schemas import UserCreate, UserLogin, Token
 from fastapi import HTTPException
 from datetime import datetime, timedelta
 from jose import jwt
@@ -47,7 +47,7 @@ class AuthService:
         to_encode = {"sub": user.username, "exp": expire}
         encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
-        return {"access_token": encoded_jwt, "token_type": "bearer", "user": user}
+        return Token(access_token=encoded_jwt, token_type="bearer", user=user)
 
     def get_current_user(self, token: str):
         try:

@@ -1,4 +1,4 @@
-from fastapi import Depends
+from fastapi import Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 from dependencies.dbclients import get_db
 from repository.UserRepository import UserRepository
@@ -6,10 +6,20 @@ from repository.AppointmentRepository import AppointmentRepository
 from services.AuthService import AuthService
 from services.AppointmentService import AppointmentService
 from fastapi.security import OAuth2PasswordBearer
-from fastapi import HTTPException
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 
+def get_token_from_cookie(request: Request):
+    # Prioritize Authorization header for testing and mobile client compatibility
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        return auth_header.split(" ")[1]
+    
+    token = request.cookies.get("access_token")
+    if token:
+        return token
+        
+    raise HTTPException(status_code=401, detail="Not authenticated")
 
 def get_user_repository(db: Session = Depends(get_db)):
     return UserRepository(db)
@@ -30,7 +40,7 @@ def get_appointment_service(
 
 
 def get_current_user(
-    token: str = Depends(oauth2_scheme),
+    token: str = Depends(get_token_from_cookie),
     auth_service: AuthService = Depends(get_auth_service),
 ):
     return auth_service.get_current_user(token)
