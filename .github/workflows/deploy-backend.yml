@@ -63,8 +63,15 @@ jobs:
       - name: Type Check (Mypy)
         run: mypy . --ignore-missing-imports
 
-      - name: Run Tests (Pytest)
-        run: python -m pytest
+      - name: Run Tests (Pytest) with Coverage
+        run: |
+          python -m pytest --cov=. --cov-report=xml --cov-report=term-missing
+
+      - name: SonarCloud Scan
+        uses: sonarsource/sonarcloud-scan-action@master
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   # --- JOB 2: CONTAINER SECURITY (Trivy) ---
   container-security:

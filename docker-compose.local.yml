@@ -8,7 +8,7 @@ services:
   test:
     build:
       context: .
-    command: sh -c "PYTHONPATH=. pytest -s --disable-warnings" # runs and exits
+    command: sh -c "PYTHONPATH=. pytest -s --disable-warnings --cov=. --cov-report=term-missing" # runs and exits
     env_file:
       - .env
   web:
