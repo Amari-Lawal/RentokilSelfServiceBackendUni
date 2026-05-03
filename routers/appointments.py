@@ -15,7 +15,7 @@ def get_appointments(
 ):
     if current_user.is_admin:
         return appt_service.get_all_appointments()
-    return appt_service.get_user_appointments(current_user.id)
+    return appt_service.get_user_appointments(int(current_user.id))
 
 
 @router.post("/", response_model=AppointmentResponse)
@@ -24,7 +24,7 @@ def create_appointment(
     current_user: User = Depends(get_current_user),
     appt_service: AppointmentService = Depends(get_appointment_service),
 ):
-    return appt_service.create_appointment(current_user.id, appointment)
+    return appt_service.create_appointment(int(current_user.id), appointment)
 
 
 @router.put("/{appointment_id}", response_model=AppointmentResponse)

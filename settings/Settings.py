@@ -41,4 +41,4 @@ class Settings(BaseModel):
     operator: ClassVar[type[OperatorSettings]] = OperatorSettings
     internal_clients: ClassVar[type[InternalClientsSettings]] = InternalClientsSettings
 
-    model_config = {"env_file": ".env", "extra": "allow"}
+    model_config = {"extra": "allow"}

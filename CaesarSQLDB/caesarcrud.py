@@ -1,4 +1,5 @@
 import base64
+from typing import Any, Dict, List, Optional, Union
 
 from psycopg import ProgrammingError
 
@@ -64,7 +65,7 @@ class CaesarCRUD:
         else:
             return False
 
-    def tuple_to_json(self, fields: tuple, result: tuple):
+    def tuple_to_json(self, fields: tuple, result: Union[tuple, List[Any]]):
         if isinstance(result[0], tuple):
             final_result = []
             for entry in result:
@@ -72,8 +73,8 @@ class CaesarCRUD:
                 final_result.append(entrydict)
             return final_result
         elif isinstance(result[0], str):
-            final_result = dict(zip(fields, result))
-            return final_result
+            single_result = dict(zip(fields, result))
+            return single_result
 
     def json_to_tuple(self, json: dict):
         keys = tuple(json.keys())
@@ -81,7 +82,11 @@ class CaesarCRUD:
         return keys, values
 
     def get_data(
-        self, fields: tuple, table: str, condition=None, getamount: int = 1000
+        self,
+        fields: tuple,
+        table: str,
+        condition: Optional[str] = None,
+        getamount: int = 1000,
     ):
 
         if len(fields) != 1:
@@ -120,7 +125,7 @@ class CaesarCRUD:
     def hex_to_base64(self, hex_file: bytes):  # x0 unicode-like hex
         return base64.b64encode(bytes.fromhex(hex_file.hex())).decode()
 
-    def get_large_data(self, fields: tuple, table: str, condition=None):
+    def get_large_data(self, fields: tuple, table: str, condition: Optional[str] = None):
 
         if len(fields) != 1:
             fieldlist = [f"{field}" for field in fields]
@@ -205,7 +210,7 @@ class CaesarCRUD:
         else:
             return False
 
-    def check_exists(self, fields: tuple, table: str, condition=None):
+    def check_exists(self, fields: tuple, table: str, condition: Optional[str] = None):
         if len(fields) != 1:
             fieldlist = [f"{field}" for field in fields]
             fieldstr = ", ".join(fieldlist)

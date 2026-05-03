@@ -1,7 +1,7 @@
 import json
 import subprocess
 import time
-from typing import Any, Callable, Union
+from typing import Any, Callable, Optional, Union
 from urllib.parse import urlparse
 
 import psycopg
@@ -76,10 +76,10 @@ class CaesarSQL:
 
     def run_command(
         self,
-        sqlcommand: str = None,
-        result_function: Callable = None,
-        datatuple: tuple = None,
-        filename: str = None,
+        sqlcommand: Optional[str] = None,
+        result_function: Optional[Callable] = None,
+        datatuple: Optional[tuple] = None,
+        filename: Optional[str] = None,
         verbose: int = 0,
     ):
         # Executes SQL Command or takes SQL file as input.
@@ -114,10 +114,10 @@ class CaesarSQL:
 
     def run_command_generator(
         self,
-        sqlcommand: str = None,
+        sqlcommand: Optional[str] = None,
         arraysize: int = 1000,
-        datatuple: tuple = None,
-        filename: str = None,
+        datatuple: Optional[tuple] = None,
+        filename: Optional[str] = None,
         verbose: int = 1,
     ):
         # Executes SQL Command or takes SQL file as input.
