@@ -15,6 +15,7 @@ class OperatorClient:
         response = requests.get(
             f"{self.base_url}/organisations/{organisation_id}",
             headers={"Authorization": f"Bearer {self.access_token}"},
+            timeout=10,
         )
 
         response.raise_for_status()

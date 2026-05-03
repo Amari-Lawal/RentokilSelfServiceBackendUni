@@ -9,7 +9,9 @@ uri = (
 
 class CaesarAIUnittest(unittest.TestCase):
     def test_message(self):
-        response = requests.get(f"{uri}/sendmessage", params={"message": "hello world"})
+        response = requests.get(
+            f"{uri}/sendmessage", params={"message": "hello world"}, timeout=10
+        )
         self.assertEqual(response.json().get("error"), None)
         self.assertNotEqual(
             response.json().get("error"),
