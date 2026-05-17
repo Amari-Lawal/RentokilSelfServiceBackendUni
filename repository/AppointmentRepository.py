@@ -1,16 +1,47 @@
+"""Appointment repository implementation with interface."""
+
+from abc import ABC, abstractmethod
 from sqlalchemy.orm import Session
 from models.database import Appointment
 from models.schemas import AppointmentCreate, AppointmentUpdate
 
 
-class AppointmentRepository:
+class IAppointmentRepository(ABC):
+    """Interface for AppointmentRepository."""
+
+    @abstractmethod
+    def get_appointment(self, appointment_id: int):
+        pass
+
+    @abstractmethod
+    def get_appointments_by_user(self, user_id: int):
+        pass
+
+    @abstractmethod
+    def get_all_appointments(self):
+        pass
+
+    @abstractmethod
+    def create_appointment(self, user_id: int, appointment: AppointmentCreate):
+        pass
+
+    @abstractmethod
+    def update_appointment(self, appointment_id: int, appointment: AppointmentUpdate):
+        pass
+
+    @abstractmethod
+    def delete_appointment(self, appointment_id: int):
+        pass
+
+
+class AppointmentRepository(IAppointmentRepository):
+    """Concrete implementation of IAppointmentRepository."""
+
     def __init__(self, db: Session):
         self.db = db
 
     def get_appointment(self, appointment_id: int):
-        appt = (
-            self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
-        )
+        appt = self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
         return self._attach_username(appt)
 
     def _attach_username(self, appt):
