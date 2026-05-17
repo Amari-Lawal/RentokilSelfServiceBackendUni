@@ -4,6 +4,9 @@ from main import app
 from models.database import Base
 from dependencies.dbclients import engine
 
+pytestmark = pytest.mark.e2e
+
+
 # Setup test database
 Base.metadata.create_all(bind=engine)
 

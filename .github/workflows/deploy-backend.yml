@@ -63,9 +63,14 @@ jobs:
       - name: Type Check (Mypy)
         run: mypy . --ignore-missing-imports
 
-      - name: Run Tests (Pytest) with Coverage
+      - name: Run Unit Tests
         run: |
-          python -m pytest --cov=. --cov-report=xml --cov-report=term-missing
+          python -m pytest -m unit --cov=. --cov-report=xml
+
+      - name: Run E2E Tests
+        run: |
+          python -m pytest -m e2e --cov=. --cov-append --cov-report=xml --cov-report=term-missing
+
 
   # --- JOB 2: CONTAINER SECURITY (Trivy) ---
   container-security:

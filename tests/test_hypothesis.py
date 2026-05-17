@@ -3,6 +3,8 @@ from models.schemas import AppointmentCreate
 import pytest
 from pydantic import ValidationError
 
+pytestmark = pytest.mark.unit
+
 
 # Simple Hypothesis test to verify AppointmentCreate validation
 @given(

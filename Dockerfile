@@ -7,10 +7,11 @@ ENV PYTHONUNBUFFERED=1 \
     PATH="/home/user/.local/bin:$PATH"
 
 # Install system deps (headless)
-RUN apt-get update && apt-get install -y --no-install-recommends \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y --no-install-recommends \
     libgl1 \
     libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
+
 
 # --- FIX: Upgrade core tools as ROOT to patch vulnerabilities in /usr/local ---
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
