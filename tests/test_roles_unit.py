@@ -1,7 +1,7 @@
+from unittest.mock import MagicMock
 import pytest
 from fastapi import HTTPException
 from dependencies.services import get_current_admin_user
-from unittest.mock import MagicMock
 
 pytestmark = pytest.mark.unit
 

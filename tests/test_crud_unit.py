@@ -1,5 +1,5 @@
-import pytest
 from unittest.mock import MagicMock
+import pytest
 from repository.AppointmentRepository import AppointmentRepository
 from models.schemas import AppointmentCreate
 from models.database import Appointment, User
@@ -32,9 +32,6 @@ def test_create_appointment(mock_db):
         road_name="Test Lane",
         postcode="M11AA"
     )
-    
-    # We need to mock the behavior of add, commit, refresh if needed
-    # But for a simple test, we just check if they were called
     
     repo.create_appointment(user_id=1, appointment=appt_data)
     
