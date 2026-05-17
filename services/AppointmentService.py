@@ -1,9 +1,14 @@
+"""Appointment service implementation."""
+
+from fastapi import HTTPException
 from repository.AppointmentRepository import AppointmentRepository
 from models.schemas import AppointmentCreate, AppointmentUpdate
-from fastapi import HTTPException
+from services.IAppointmentService import IAppointmentService
 
 
-class AppointmentService:
+class AppointmentService(IAppointmentService):
+    """Concrete implementation of IAppointmentService."""
+
     def __init__(self, appt_repo: AppointmentRepository):
         self.appt_repo = appt_repo
 
@@ -40,13 +45,13 @@ class AppointmentService:
             return self.appt_repo.update_appointment(
                 appt_id, AppointmentUpdate(**restricted_data)
             )
-        else:
-            # Regular user can update everything EXCEPT status
-            if "status" in update_dict:
-                del update_dict["status"]
-            return self.appt_repo.update_appointment(
-                appt_id, AppointmentUpdate(**update_dict)
-            )
+
+        # Regular user can update everything EXCEPT status
+        if "status" in update_dict:
+            del update_dict["status"]
+        return self.appt_repo.update_appointment(
+            appt_id, AppointmentUpdate(**update_dict)
+        )
 
     def delete_appointment(self, appt_id: int, user):
         appt = self.appt_repo.get_appointment(appt_id)

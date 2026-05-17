@@ -1,10 +1,13 @@
-from repository.UserRepository import UserRepository
-from models.schemas import UserCreate, UserLogin, Token
-from fastapi import HTTPException
+"""Auth service implementation."""
+
+import os
 from datetime import datetime, timedelta
 from jose import jwt
+from fastapi import HTTPException
+from repository.UserRepository import UserRepository
+from models.schemas import UserCreate, UserLogin, Token
 from exceptions.CustomExceptions import ConfigurationError
-import os
+from services.IAuthService import IAuthService
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 if not JWT_SECRET_KEY:
@@ -15,7 +18,9 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
 
 
-class AuthService:
+class AuthService(IAuthService):
+    """Concrete implementation of IAuthService."""
+
     def __init__(self, user_repo: UserRepository):
         self.user_repo = user_repo
 
@@ -57,10 +62,10 @@ class AuthService:
                 raise HTTPException(
                     status_code=401, detail="Could not validate credentials"
                 )
-        except Exception:
+        except Exception as exc:
             raise HTTPException(
                 status_code=401, detail="Could not validate credentials"
-            )
+            ) from exc
 
         user = self.user_repo.get_user_by_username(username)
         if user is None:
