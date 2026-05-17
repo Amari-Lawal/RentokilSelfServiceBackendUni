@@ -10,6 +10,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 ENV = os.getenv("ENVIRONMENT", "development")
 IS_PROD = ENV != "development"
 
+
 @router.post("/register", response_model=UserResponse)
 def register(user: UserCreate, auth_service: AuthService = Depends(get_auth_service)):
     return auth_service.register(user)
@@ -44,9 +45,9 @@ def login(
 @router.post("/logout")
 def logout(response: Response):
     response.delete_cookie(
-        key="access_token", 
-        httponly=True, 
-        secure=IS_PROD, 
-        samesite="none" if IS_PROD else "lax"
+        key="access_token",
+        httponly=True,
+        secure=IS_PROD,
+        samesite="none" if IS_PROD else "lax",
     )
     return {"message": "Logged out successfully"}
