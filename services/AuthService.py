@@ -3,7 +3,7 @@
 import os
 import logging
 from datetime import datetime, timedelta
-from jose import jwt
+import jwt
 from fastapi import HTTPException
 from repository.UserRepository import UserRepository
 from models.schemas import UserCreate, UserLogin, Token
