@@ -27,7 +27,10 @@ class AppointmentService(IAppointmentService):
             raise HTTPException(status_code=404, detail="Appointment not found")
 
         # Only admin or the owner can update
-        if not user.is_admin and appt.user_id != user.id:
+        if (
+            "admin" not in [role.name for role in user.roles]
+            and appt.user_id != user.id
+        ):
             raise HTTPException(
                 status_code=403, detail="Not authorized to update this appointment"
             )
@@ -35,7 +38,7 @@ class AppointmentService(IAppointmentService):
         # RESTRICTIONS:
         update_dict = appt_data.model_dump(exclude_unset=True)
 
-        if user.is_admin:
+        if "admin" in [role.name for role in user.roles]:
             # Admin can ONLY update status
             restricted_data = {k: v for k, v in update_dict.items() if k == "status"}
             if not restricted_data:
@@ -59,7 +62,10 @@ class AppointmentService(IAppointmentService):
             raise HTTPException(status_code=404, detail="Appointment not found")
 
         # Only admin or the owner can delete
-        if not user.is_admin and appt.user_id != user.id:
+        if (
+            "admin" not in [role.name for role in user.roles]
+            and appt.user_id != user.id
+        ):
             raise HTTPException(
                 status_code=403, detail="Not authorized to delete this appointment"
             )

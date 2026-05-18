@@ -14,10 +14,18 @@ class UserLogin(BaseModel):
     password: str
 
 
+class RoleResponse(BaseModel):
+    id: int
+    name: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class UserResponse(BaseModel):
     id: int
     username: str
     is_admin: bool
+    roles: list[RoleResponse] = []
 
     model_config = ConfigDict(from_attributes=True)
 

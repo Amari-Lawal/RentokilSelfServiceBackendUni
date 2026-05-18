@@ -49,6 +49,7 @@ def get_current_user(
 
 
 def get_current_admin_user(current_user=Depends(get_current_user)):
-    if not current_user.is_admin:
+    role_names = [role.name for role in current_user.roles]
+    if "admin" not in role_names:
         raise HTTPException(status_code=403, detail="Not enough privileges")
     return current_user

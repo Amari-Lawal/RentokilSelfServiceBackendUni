@@ -13,7 +13,9 @@ class AppointmentRepository(IAppointmentRepository):
         self.db = db
 
     def get_appointment(self, appointment_id: int):
-        appt = self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        appt = (
+            self.db.query(Appointment).filter(Appointment.id == appointment_id).first()
+        )
         return self._attach_username(appt)
 
     def _attach_username(self, appt):

@@ -2,7 +2,7 @@
 
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-from models.database import User
+from models.database import User, Role
 from models.schemas import UserCreate
 from repository.IUserRepository import IUserRepository
 
@@ -21,11 +21,24 @@ class UserRepository(IUserRepository):
     def get_user(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
 
-    def create_user(self, user: UserCreate, is_admin: bool = False):
+    def create_user(
+        self, user: UserCreate, is_admin: bool = False, role_names: list[str] = None
+    ):
+        if role_names is None:
+            role_names = ["admin"] if is_admin else ["customer"]
+
         hashed_password = pwd_context.hash(user.password)
         db_user = User(
             username=user.username, password_hash=hashed_password, is_admin=is_admin
         )
+
+        for role_name in role_names:
+            role = self.db.query(Role).filter(Role.name == role_name).first()
+            if not role:
+                role = Role(name=role_name)
+                self.db.add(role)
+            db_user.roles.append(role)
+
         self.db.add(db_user)
         self.db.commit()
         self.db.refresh(db_user)

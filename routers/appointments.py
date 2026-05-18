@@ -13,7 +13,7 @@ def get_appointments(
     current_user: User = Depends(get_current_user),
     appt_service: AppointmentService = Depends(get_appointment_service),
 ):
-    if current_user.is_admin:
+    if "admin" in [role.name for role in current_user.roles]:
         return appt_service.get_all_appointments()
     return appt_service.get_user_appointments(int(current_user.id))
 

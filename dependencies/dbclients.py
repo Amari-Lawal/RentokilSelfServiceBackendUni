@@ -32,15 +32,27 @@ def init_db():
 
         pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+        from models.database import Role
+
+        admin_role = db.query(Role).filter(Role.name == "admin").first()
+        if not admin_role:
+            admin_role = Role(name="admin")
+            db.add(admin_role)
+            db.commit()
+            db.refresh(admin_role)
+
         admin = db.query(User).filter(User.username == "admin").first()
         hashed_pw = pwd_context.hash("adminpassword123")
         if not admin:
             admin_user = User(username="admin", password_hash=hashed_pw, is_admin=True)
+            admin_user.roles.append(admin_role)
             db.add(admin_user)
         else:
             # For POC, ensure password and admin status are reset to default
             admin.password_hash = hashed_pw
             admin.is_admin = True
+            if admin_role not in admin.roles:
+                admin.roles.append(admin_role)
 
         # Seed Insects
         from models.database import Insect
