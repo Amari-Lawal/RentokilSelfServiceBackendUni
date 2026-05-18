@@ -1,6 +1,7 @@
 """Auth service implementation."""
 
 import os
+import logging
 from datetime import datetime, timedelta
 from jose import jwt
 from fastapi import HTTPException
@@ -8,6 +9,8 @@ from repository.UserRepository import UserRepository
 from models.schemas import UserCreate, UserLogin, Token
 from exceptions.CustomExceptions import ConfigurationError
 from services.IAuthService import IAuthService
+
+logger = logging.getLogger(__name__)
 
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 if not JWT_SECRET_KEY:
@@ -28,7 +31,9 @@ class AuthService(IAuthService):
         existing_user = self.user_repo.get_user_by_username(user_data.username)
         if existing_user:
             raise HTTPException(status_code=400, detail="Username already registered")
-        return self.user_repo.create_user(user_data, is_admin=False)
+        user = self.user_repo.create_user(user_data, is_admin=False)
+        logger.info(f"User {user.username} registered successfully")
+        return user
 
     def create_admin(self, user_data: UserCreate):
         # This will be protected by an admin-only route in the router
@@ -36,7 +41,9 @@ class AuthService(IAuthService):
         if existing_user:
             raise HTTPException(status_code=400, detail="Username already registered")
 
-        return self.user_repo.create_user(user_data, is_admin=True)
+        user = self.user_repo.create_user(user_data, is_admin=True)
+        logger.info(f"Admin user {user.username} created successfully")
+        return user
 
     def authenticate(self, user_data: UserLogin):
         user = self.user_repo.get_user_by_username(user_data.username)
@@ -52,6 +59,7 @@ class AuthService(IAuthService):
         to_encode = {"sub": user.username, "exp": expire}
         encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
+        logger.info(f"User {user.username} authenticated successfully")
         return Token(access_token=encoded_jwt, token_type="bearer", user=user)
 
     def get_current_user(self, token: str):

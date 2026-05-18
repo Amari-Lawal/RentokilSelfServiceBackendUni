@@ -52,9 +52,10 @@ def test_hypothesis_postcode_negative():
 @given(postcode=st.text())
 def test_hypothesis_postcode_validation(postcode):
     import re
+
     uk_regex = r"^(([A-Z]{1,2}[0-9][A-Z0-9]?)([0-9][A-Z]{2}))|(GIR0AA)$"
     matches = re.match(uk_regex, postcode.upper().strip())
-    
+
     try:
         AppointmentCreate(
             date="2028-01-01",

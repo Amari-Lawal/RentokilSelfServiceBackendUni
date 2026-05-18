@@ -1,9 +1,12 @@
 """Appointment service implementation."""
 
+import logging
 from fastapi import HTTPException
 from repository.AppointmentRepository import AppointmentRepository
 from models.schemas import AppointmentCreate, AppointmentUpdate
 from services.IAppointmentService import IAppointmentService
+
+logger = logging.getLogger(__name__)
 
 
 class AppointmentService(IAppointmentService):
@@ -19,7 +22,9 @@ class AppointmentService(IAppointmentService):
         return self.appt_repo.get_all_appointments()
 
     def create_appointment(self, user_id: int, appt_data: AppointmentCreate):
-        return self.appt_repo.create_appointment(user_id, appt_data)
+        appt = self.appt_repo.create_appointment(user_id, appt_data)
+        logger.info(f"User {user_id} created appointment {appt.id}")
+        return appt
 
     def update_appointment(self, appt_id: int, appt_data: AppointmentUpdate, user):
         appt = self.appt_repo.get_appointment(appt_id)
@@ -52,9 +57,11 @@ class AppointmentService(IAppointmentService):
         # Regular user can update everything EXCEPT status
         if "status" in update_dict:
             del update_dict["status"]
-        return self.appt_repo.update_appointment(
+        updated_appt = self.appt_repo.update_appointment(
             appt_id, AppointmentUpdate(**update_dict)
         )
+        logger.info(f"User {user.id} updated appointment {appt_id}")
+        return updated_appt
 
     def delete_appointment(self, appt_id: int, user):
         appt = self.appt_repo.get_appointment(appt_id)
@@ -70,4 +77,6 @@ class AppointmentService(IAppointmentService):
                 status_code=403, detail="Not authorized to delete this appointment"
             )
 
-        return self.appt_repo.delete_appointment(appt_id)
+        result = self.appt_repo.delete_appointment(appt_id)
+        logger.info(f"User {user.id} deleted appointment {appt_id}")
+        return result
