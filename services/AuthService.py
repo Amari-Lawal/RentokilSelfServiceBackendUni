@@ -57,6 +57,7 @@ class AuthService(IAuthService):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expire = datetime.utcnow() + access_token_expires
         to_encode = {"sub": user.username, "exp": expire}
+        assert JWT_SECRET_KEY is not None
         encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
 
         logger.info(f"User {user.username} authenticated successfully")
@@ -64,8 +65,9 @@ class AuthService(IAuthService):
 
     def get_current_user(self, token: str):
         try:
+            assert JWT_SECRET_KEY is not None
             payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
-            username: str = payload.get("sub")
+            username = payload.get("sub")
             if username is None:
                 raise HTTPException(
                     status_code=401, detail="Could not validate credentials"
