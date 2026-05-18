@@ -54,7 +54,7 @@ jobs:
 
       # --- SECURITY EXTRA 3: SCA (Safety) ---
       - name: Dependency Check (Safety)
-        run: safety scan
+        run: safety check
 
       - name: Lint with Pylint
         run: |
