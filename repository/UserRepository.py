@@ -1,5 +1,6 @@
 """User repository implementation."""
 
+from typing import Optional
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 from models.database import User, Role
@@ -22,7 +23,10 @@ class UserRepository(IUserRepository):
         return self.db.query(User).filter(User.id == user_id).first()
 
     def create_user(
-        self, user: UserCreate, is_admin: bool = False, role_names: list[str] = None
+        self,
+        user: UserCreate,
+        is_admin: bool = False,
+        role_names: Optional[list[str]] = None,
     ):
         if role_names is None:
             role_names = ["admin"] if is_admin else ["customer"]
