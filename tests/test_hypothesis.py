@@ -2,6 +2,7 @@ from hypothesis import given, strategies as st
 from models.schemas import AppointmentCreate
 import pytest
 from pydantic import ValidationError
+from datetime import date, timedelta
 
 pytestmark = pytest.mark.unit
 
@@ -45,4 +46,37 @@ def test_hypothesis_postcode_negative():
             door_number="1",
             road_name="Valid Road",
             postcode="INVALID_POSTCODE",
+        )
+
+
+@given(postcode=st.text())
+def test_hypothesis_postcode_validation(postcode):
+    import re
+    uk_regex = r"^(([A-Z]{1,2}[0-9][A-Z0-9]?)([0-9][A-Z]{2}))|(GIR0AA)$"
+    matches = re.match(uk_regex, postcode.upper().strip())
+    
+    try:
+        AppointmentCreate(
+            date="2028-01-01",
+            time="10:00",
+            insect_id=1,
+            door_number="1",
+            road_name="Valid Road",
+            postcode=postcode,
+        )
+        assert matches is not None
+    except ValidationError:
+        assert matches is None
+
+
+@given(date_val=st.dates(max_value=date.today() - timedelta(days=1)))
+def test_hypothesis_past_date_fails(date_val):
+    with pytest.raises(ValidationError):
+        AppointmentCreate(
+            date=date_val.strftime("%Y-%m-%d"),
+            time="10:00",
+            insect_id=1,
+            door_number="1",
+            road_name="Valid Road",
+            postcode="EN11XW",
         )

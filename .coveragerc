@@ -1,0 +1,8 @@
+[run]
+omit =
+    CaesarJWT/*
+    CaesarSQLDB/*
+    caesaraiunit.py
+    helpers/*
+    settings/*
+    clients/*
