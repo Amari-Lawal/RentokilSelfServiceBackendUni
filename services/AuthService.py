@@ -3,6 +3,7 @@
 import os
 import logging
 from datetime import datetime, timedelta
+from typing import cast
 import jwt
 from fastapi import HTTPException
 from repository.UserRepository import UserRepository
@@ -57,16 +58,14 @@ class AuthService(IAuthService):
         access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
         expire = datetime.utcnow() + access_token_expires
         to_encode = {"sub": user.username, "exp": expire}
-        assert JWT_SECRET_KEY is not None
-        encoded_jwt = jwt.encode(to_encode, JWT_SECRET_KEY, algorithm=ALGORITHM)
+        encoded_jwt = jwt.encode(to_encode, cast(str, JWT_SECRET_KEY), algorithm=ALGORITHM)
 
         logger.info(f"User {user.username} authenticated successfully")
         return Token(access_token=encoded_jwt, token_type="bearer", user=user)
 
     def get_current_user(self, token: str):
         try:
-            assert JWT_SECRET_KEY is not None
-            payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[ALGORITHM])
+            payload = jwt.decode(token, cast(str, JWT_SECRET_KEY), algorithms=[ALGORITHM])
             username = payload.get("sub")
             if username is None:
                 raise HTTPException(
