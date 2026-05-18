@@ -4,6 +4,13 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import auth, appointments, insects, locations
 from dependencies.dbclients import init_db
 import logging
+import os
+import sentry_sdk
+
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    traces_sample_rate=1.0,
+)
 
 app = FastAPI(
     title="Rentokil Self Service API",

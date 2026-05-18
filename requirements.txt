@@ -16,3 +16,4 @@ jaraco.context>=6.1.0
 wheel>=0.46.2
 pytest-cov
 hypothesis
+sentry-sdk[fastapi]
