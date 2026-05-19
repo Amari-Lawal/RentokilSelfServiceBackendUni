@@ -135,3 +135,5 @@ jobs:
             DATABASE_URL=sqlite:///app.db
             JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
             ENVIRONMENT=${{ env.ENV_NAME }}
+            SENTRY_DSN=${{ secrets.SENTRY_DSN }}
+            ALLOW_ORIGINS=${{ secrets.ALLOW_ORIGINS }}
