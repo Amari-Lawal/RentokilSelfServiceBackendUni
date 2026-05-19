@@ -11,7 +11,7 @@ pytestmark = pytest.mark.unit
 @given(
     door_number=st.text(min_size=1, max_size=10),
     road_name=st.text(min_size=3),
-    postcode=st.just("EN11XW"),  # Using a fixed valid postcode to focus on other fields
+    postcode=st.just("SW1A1AA"),  # Using a fixed valid postcode to focus on other fields
     date=st.just("2028-01-01"),
     time=st.just("10:00"),
     insect_id=st.integers(min_value=1),
@@ -79,5 +79,5 @@ def test_hypothesis_past_date_fails(date_val):
             insect_id=1,
             door_number="1",
             road_name="Valid Road",
-            postcode="EN11XW",
+            postcode="SW1A1AA",
         )
