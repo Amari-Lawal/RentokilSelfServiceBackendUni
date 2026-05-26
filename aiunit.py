@@ -7,7 +7,7 @@ uri = (
 )
 
 
-class CaesarAIUnittest(unittest.TestCase):
+class AIUnittest(unittest.TestCase):
     def test_message(self):
         response = requests.get(
             f"{uri}/sendmessage", params={"message": "hello world"}, timeout=10

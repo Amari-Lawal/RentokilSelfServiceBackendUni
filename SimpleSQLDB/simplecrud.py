@@ -3,12 +3,12 @@ from typing import Any, List, Optional, Union
 
 from psycopg import ProgrammingError, sql
 
-from CaesarSQLDB.caesarsql import CaesarSQL
+from SimpleSQLDB.simplesql import SimpleSQL
 
 
-class CaesarCRUD:
+class SimpleCRUD:
     def __init__(self) -> None:
-        self.caesarsql = CaesarSQL()
+        self.simplesql = SimpleSQL()
 
     def create_table(self, primary_key: str, fields: tuple, types: tuple, table: str):
         query = sql.SQL(
@@ -24,7 +24,7 @@ class CaesarCRUD:
             ),
         )
         try:
-            self.caesarsql.run_command(query, self.caesarsql.fetch)
+            self.simplesql.run_command(query, self.simplesql.fetch)
             return {"message": f"{table} table was created."}
         except ProgrammingError as pex:
             if "already exists" in str(pex):
@@ -46,9 +46,9 @@ class CaesarCRUD:
             ret=sql.Identifier(fields[0]),
         )
 
-        result = self.caesarsql.run_command(
+        result = self.simplesql.run_command(
             query,
-            self.caesarsql.fetch,
+            self.simplesql.fetch,
             datatuple=values,
         )
         return len(result) != 0
@@ -90,7 +90,7 @@ class CaesarCRUD:
             limit=sql.Literal(getamount),
         )
 
-        result = self.caesarsql.run_command(query, self.caesarsql.fetch)
+        result = self.simplesql.run_command(query, self.simplesql.fetch)
         if not result:
             return False
         if isinstance(result, list):
@@ -112,7 +112,7 @@ class CaesarCRUD:
             table=sql.Identifier(table),
             condition=sql.SQL(condition) if condition else None,
         )
-        return self.caesarsql.run_command_generator(query)
+        return self.simplesql.run_command_generator(query)
 
     def update_data(
         self, fieldstoupdate: tuple, values: tuple, table: str, condition: str
@@ -126,8 +126,8 @@ class CaesarCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(fieldstoupdate[0]),
         )
-        result = self.caesarsql.run_command(
-            query, self.caesarsql.fetch, datatuple=values
+        result = self.simplesql.run_command(
+            query, self.simplesql.fetch, datatuple=values
         )
         return len(result) == 0
 
@@ -142,7 +142,7 @@ class CaesarCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(fieldstoupdate),
         )
-        result = self.caesarsql.run_command(query, self.caesarsql.fetch)
+        result = self.simplesql.run_command(query, self.simplesql.fetch)
         return len(result) == 0
 
     def delete_data(self, table: str, condition: str):
@@ -152,7 +152,7 @@ class CaesarCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(field_name),
         )
-        result = self.caesarsql.run_command(query, self.caesarsql.fetch)
+        result = self.simplesql.run_command(query, self.simplesql.fetch)
         return len(result) == 0
 
     def check_exists(self, fields: tuple, table: str, condition: Optional[str] = None):
@@ -165,7 +165,7 @@ class CaesarCRUD:
             table=sql.Identifier(table),
             condition=sql.SQL(condition) if condition else None,
         )
-        result = self.caesarsql.run_command(query, self.caesarsql.check_exists)
+        result = self.simplesql.run_command(query, self.simplesql.check_exists)
         if isinstance(result, bool):
             return result
         return {

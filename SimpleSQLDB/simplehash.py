@@ -2,7 +2,7 @@ import hashlib
 import uuid
 
 
-class CaesarHash:
+class SimpleHash:
     @staticmethod
     def hash_text_auth(text):
         """
@@ -34,5 +34,5 @@ class CaesarHash:
         hashinput = data["quotatitle"].lower().replace(" ", "", 100) + data[
             "quotatype"
         ].lower().replace(" ", "", 100)
-        quotahash = CaesarHash.hash_text(hashinput)
+        quotahash = SimpleHash.hash_text(hashinput)
         return quotahash

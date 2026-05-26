@@ -2,12 +2,12 @@ import hashlib
 
 import jwt
 
-from CaesarSQLDB.caesarcrud import CaesarCRUD
+from SimpleSQLDB.simplecrud import SimpleCRUD
 
 
-class CaesarJWT:
-    def __init__(self, caesarcrud: CaesarCRUD) -> None:
-        self.caesarcrud = caesarcrud
+class SimpleJWT:
+    def __init__(self, simplecrud: SimpleCRUD) -> None:
+        self.simplecrud = simplecrud
         self.JWT_SECRET = "Peter Piper picked a peck of pickled peppers, A peck of pickled peppers Peter Piper picked, If Peter Piper picked a peck of pickled peppers,Where's the peck of pickled peppers Peter Piper picked"  #'super-secret'
         # IRL we should NEVER hardcode the secret: it should be an evironment variable!!!
         self.JWT_ALGORITHM = "HS256"
@@ -31,18 +31,18 @@ class CaesarJWT:
     def provide_access_token(self, login_details, student=0):
         condition = f"email = '{login_details['email']}'"
         if student == 0:
-            email_exists = self.caesarcrud.check_exists(
+            email_exists = self.simplecrud.check_exists(
                 ("*"), "users", condition=condition
             )
         elif student == 1:
-            email_exists = self.caesarcrud.check_exists(
+            email_exists = self.simplecrud.check_exists(
                 ("*"), "studentsubscriptions", condition=condition
             )
         if email_exists:
             encrypted_password = hashlib.sha256(
                 login_details["password"].encode("utf-8")
             ).hexdigest()
-            email_data = self.caesarcrud.get_data(
+            email_data = self.simplecrud.get_data(
                 ("email", "password"), "users", condition=condition
             )[0]
             if email_data["password"] == encrypted_password:

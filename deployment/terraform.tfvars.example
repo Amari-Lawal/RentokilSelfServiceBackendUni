@@ -1,4 +1,4 @@
-project_id = "caesaraiapis"
+project_id = "genericaiapis"
 service_name = "blustoryappframeconvert"
 region = "us-central1"
 key_file_path = "secrets/service_account.json"

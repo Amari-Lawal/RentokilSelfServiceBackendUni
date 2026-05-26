@@ -1,8 +1,8 @@
 [run]
 omit =
-    CaesarJWT/*
-    CaesarSQLDB/*
-    caesaraiunit.py
+    SimpleJWT/*
+    SimpleSQLDB/*
+    aiunit.py
     helpers/*
     settings/*
     clients/*

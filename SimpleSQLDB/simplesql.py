@@ -8,7 +8,7 @@ import psycopg
 from psycopg import sql
 
 
-class CaesarSQL:
+class SimpleSQL:
     def __init__(self) -> None:
         # Makes SQL connection to remote server.
         import os
