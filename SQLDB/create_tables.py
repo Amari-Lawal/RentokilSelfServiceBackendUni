@@ -1,12 +1,12 @@
-from SimpleSQLDB.simplecrud import SimpleCRUD
+from SQLDB.crud import CRUD
 
 
-class SimpleCreateTables:
+class CreateTables:
     def __init__(self) -> None:
         self.usersfields = ("email", "password")
 
-    def create(self, simplecrud: SimpleCRUD):
-        simplecrud.create_table(
+    def create(self, crud: CRUD):
+        crud.create_table(
             "userid",
             self.usersfields,
             ("varchar(255) NOT NULL", "varchar(255) NOT NULL"),

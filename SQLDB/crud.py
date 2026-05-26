@@ -3,12 +3,12 @@ from typing import Any, List, Optional, Union
 
 from psycopg import ProgrammingError, sql
 
-from SimpleSQLDB.simplesql import SimpleSQL
+from SQLDB.sqldb import SQL
 
 
-class SimpleCRUD:
+class CRUD:
     def __init__(self) -> None:
-        self.simplesql = SimpleSQL()
+        self.sql = SQL()
 
     def create_table(self, primary_key: str, fields: tuple, types: tuple, table: str):
         query = sql.SQL(
@@ -24,7 +24,7 @@ class SimpleCRUD:
             ),
         )
         try:
-            self.simplesql.run_command(query, self.simplesql.fetch)
+            self.sql.run_command(query, self.sql.fetch)
             return {"message": f"{table} table was created."}
         except ProgrammingError as pex:
             if "already exists" in str(pex):
@@ -46,9 +46,9 @@ class SimpleCRUD:
             ret=sql.Identifier(fields[0]),
         )
 
-        result = self.simplesql.run_command(
+        result = self.sql.run_command(
             query,
-            self.simplesql.fetch,
+            self.sql.fetch,
             datatuple=values,
         )
         return len(result) != 0
@@ -90,7 +90,7 @@ class SimpleCRUD:
             limit=sql.Literal(getamount),
         )
 
-        result = self.simplesql.run_command(query, self.simplesql.fetch)
+        result = self.sql.run_command(query, self.sql.fetch)
         if not result:
             return False
         if isinstance(result, list):
@@ -112,7 +112,7 @@ class SimpleCRUD:
             table=sql.Identifier(table),
             condition=sql.SQL(condition) if condition else None,
         )
-        return self.simplesql.run_command_generator(query)
+        return self.sql.run_command_generator(query)
 
     def update_data(
         self, fieldstoupdate: tuple, values: tuple, table: str, condition: str
@@ -126,8 +126,8 @@ class SimpleCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(fieldstoupdate[0]),
         )
-        result = self.simplesql.run_command(
-            query, self.simplesql.fetch, datatuple=values
+        result = self.sql.run_command(
+            query, self.sql.fetch, datatuple=values
         )
         return len(result) == 0
 
@@ -142,7 +142,7 @@ class SimpleCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(fieldstoupdate),
         )
-        result = self.simplesql.run_command(query, self.simplesql.fetch)
+        result = self.sql.run_command(query, self.sql.fetch)
         return len(result) == 0
 
     def delete_data(self, table: str, condition: str):
@@ -152,7 +152,7 @@ class SimpleCRUD:
             cond=sql.SQL(condition),
             ret=sql.Identifier(field_name),
         )
-        result = self.simplesql.run_command(query, self.simplesql.fetch)
+        result = self.sql.run_command(query, self.sql.fetch)
         return len(result) == 0
 
     def check_exists(self, fields: tuple, table: str, condition: Optional[str] = None):
@@ -165,7 +165,7 @@ class SimpleCRUD:
             table=sql.Identifier(table),
             condition=sql.SQL(condition) if condition else None,
         )
-        result = self.simplesql.run_command(query, self.simplesql.check_exists)
+        result = self.sql.run_command(query, self.sql.check_exists)
         if isinstance(result, bool):
             return result
         return {

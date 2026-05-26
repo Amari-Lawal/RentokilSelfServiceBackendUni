@@ -2,7 +2,7 @@ import hashlib
 import uuid
 
 
-class SimpleHash:
+class Hash:
     @staticmethod
     def hash_text_auth(text):
         """
@@ -34,5 +34,5 @@ class SimpleHash:
         hashinput = data["quotatitle"].lower().replace(" ", "", 100) + data[
             "quotatype"
         ].lower().replace(" ", "", 100)
-        quotahash = SimpleHash.hash_text(hashinput)
+        quotahash = Hash.hash_text(hashinput)
         return quotahash
