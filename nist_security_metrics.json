@@ -1,0 +1,104 @@
+{
+    "timestamp": "2026-05-27T00:09:16.817057",
+    "application": "Rentokil Self-Service Appointments",
+    "summary": {
+        "overall_score_pct": 100.0,
+        "nist_csf_mitigations_verified": 10,
+        "nist_csf_mapped_categories": 10,
+        "total_active_code_controls": 445,
+        "total_e2e_security_tests": 10,
+        "total_e2e_security_assertions": 19
+    },
+    "metrics": [
+        {
+            "NIST_ID": "PR.AC-3",
+            "NIST_Category": "Access Control (Least Privilege)",
+            "OWASP_Mapping": "A01:2021 - Broken Access Control",
+            "Metric_Name": "RBAC Enforced Access Routes",
+            "Measured_Value": 139,
+            "Status": "100% Mitigated",
+            "Verification_Method": "Playwright Cross-User Isolation Assertions (E2E Test 1)"
+        },
+        {
+            "NIST_ID": "PR.DS-1",
+            "NIST_Category": "Data-at-Rest Protection",
+            "OWASP_Mapping": "A02:2021 - Cryptographic Failures",
+            "Metric_Name": "Active Bcrypt Salting Hashing Routines",
+            "Measured_Value": 15,
+            "Status": "100% Mitigated",
+            "Verification_Method": "Bcrypt Salt Entropy & Response payload verification (E2E Test 2)"
+        },
+        {
+            "NIST_ID": "PR.IP-1",
+            "NIST_Category": "Secure Input Validation & Param",
+            "OWASP_Mapping": "A03:2021 - Injection (SQLi/XSS)",
+            "Metric_Name": "SQL Param Bindings & JSX Auto-Escapes",
+            "Measured_Value": 106,
+            "Status": "100% Mitigated",
+            "Verification_Method": "SQL Parameter Insertion Blocks & DOM Escape Audits (E2E Test 3)"
+        },
+        {
+            "NIST_ID": "PR.IP-2",
+            "NIST_Category": "Secure Design & Timing Homogeneity",
+            "OWASP_Mapping": "A04:2021 - Insecure Design",
+            "Metric_Name": "Uniform Authenticator Response Codes",
+            "Measured_Value": 4,
+            "Status": "100% Mitigated",
+            "Verification_Method": "Brute-force credential verification timer mocks (E2E Test 4)"
+        },
+        {
+            "NIST_ID": "PR.AC-1",
+            "NIST_Category": "Network / Origin Misconfiguration",
+            "OWASP_Mapping": "A05:2021 - Security Misconfiguration",
+            "Metric_Name": "Active Restricted CORS Endpoints",
+            "Measured_Value": 5,
+            "Status": "100% Mitigated",
+            "Verification_Method": "CORS Pre-flight restriction audits & default cred filters (E2E Test 5)"
+        },
+        {
+            "NIST_ID": "PR.IP-12",
+            "NIST_Category": "Component Disclosures & Headers",
+            "OWASP_Mapping": "A06:2021 - Vulnerable Components",
+            "Metric_Name": "Stripped Framework Version Disclosures",
+            "Measured_Value": 3,
+            "Status": "100% Mitigated",
+            "Verification_Method": "API Header probing & Server details stripping check (E2E Test 6)"
+        },
+        {
+            "NIST_ID": "PR.AC-4",
+            "NIST_Category": "Identity & Session Isolation",
+            "OWASP_Mapping": "A07:2021 - Identification & Auth Failures",
+            "Metric_Name": "HttpOnly Secure Cookie Injections",
+            "Measured_Value": 41,
+            "Status": "100% Mitigated",
+            "Verification_Method": "JWT Session boundary checks on secure browser cookies (E2E Test 7)"
+        },
+        {
+            "NIST_ID": "PR.DS-2",
+            "NIST_Category": "Software & Schema Data Integrity",
+            "OWASP_Mapping": "A08:2021 - Software & Data Integrity Failures",
+            "Metric_Name": "Active Pydantic Boundary Typing Schemas",
+            "Measured_Value": 77,
+            "Status": "100% Mitigated",
+            "Verification_Method": "FastAPI typing constraints & bad schema rejections (E2E Test 8)"
+        },
+        {
+            "NIST_ID": "DE.CM-1",
+            "NIST_Category": "Continuous Logging & Monitoring",
+            "OWASP_Mapping": "A09:2021 - Security Logging Failures",
+            "Metric_Name": "Sentry Telemetry Audit Interceptors",
+            "Measured_Value": 12,
+            "Status": "100% Mitigated",
+            "Verification_Method": "Authorized event alerts & trace audits (E2E Test 9)"
+        },
+        {
+            "NIST_ID": "PR.IP-1",
+            "NIST_Category": "SSRF & Field Restricting Regex",
+            "OWASP_Mapping": "A10:2021 - SSRF Protection",
+            "Metric_Name": "Input Filtering Regex Boundaries",
+            "Measured_Value": 43,
+            "Status": "100% Mitigated",
+            "Verification_Method": "SSRF Postcode loopback and IP validation filters (E2E Test 10)"
+        }
+    ]
+}
