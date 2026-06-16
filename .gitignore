@@ -32,3 +32,4 @@ MANIFEST
 
 # Pytest
 .pytest_cache/
+sa-key.json

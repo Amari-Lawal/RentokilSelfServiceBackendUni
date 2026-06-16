@@ -74,7 +74,7 @@ class AppointmentBase(BaseModel):
 
         # Official UK Postcode Structural Regex (No Spaces)
         cleaned_postcode = v.upper().replace(" ", "").strip()
-        uk_regex = r"^(([A-Z]{1,2}[0-9][A-Z0-9]?)([0-9][A-Z]{2}))|(GIR0AA)$"
+        uk_regex = r"^((([A-Z]{1,2}[0-9][A-Z0-9]?)([0-9][A-Z]{2}))|(GIR0AA))$"
         if not re.match(uk_regex, cleaned_postcode):
             raise ValueError(
                 "Invalid UK Postcode structure. Please use the no-space format."
