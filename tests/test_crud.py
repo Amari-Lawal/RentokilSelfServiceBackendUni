@@ -1,5 +1,5 @@
 import pytest
-from fastapi.testclient import TestClient
+from tests.flexible_client import FlexibleClient
 from main import app
 from models.database import Base
 from dependencies.dbclients import engine
@@ -10,7 +10,7 @@ pytestmark = pytest.mark.e2e
 # Setup test database
 Base.metadata.create_all(bind=engine)
 
-client = TestClient(app)
+client = FlexibleClient(app)
 
 
 @pytest.fixture(scope="module")
