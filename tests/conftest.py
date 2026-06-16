@@ -1,6 +1,8 @@
 import os
+import pytest
 from fastapi.testclient import TestClient
 import requests
+from main import app
 
 class FlexibleClient:
     def __init__(self, app, base_url=None):
@@ -15,13 +17,10 @@ class FlexibleClient:
         if self.local_client:
             return getattr(self.local_client, method)(url, **kwargs)
         else:
-            # Live requests
-            # Ensure the url starts with a single slash/is formatted correctly
             path = url
             if not path.startswith("/"):
                 path = "/" + path
             full_url = self.base_url.rstrip("/") + path
-            # Make the request to the live backend URL
             return getattr(requests, method)(full_url, **kwargs)
 
     def get(self, url, **kwargs):
@@ -35,3 +34,7 @@ class FlexibleClient:
 
     def delete(self, url, **kwargs):
         return self._request("delete", url, **kwargs)
+
+@pytest.fixture(scope="session")
+def client():
+    return FlexibleClient(app)

@@ -1,7 +1,5 @@
 import pytest
-from tests.flexible_client import FlexibleClient
 import time
-from main import app
 from models.database import Base
 from dependencies.dbclients import engine
 
@@ -10,11 +8,10 @@ pytestmark = pytest.mark.e2e
 
 # Setup test database
 Base.metadata.create_all(bind=engine)
-client = FlexibleClient(app)
 
 
 @pytest.fixture
-def user_token():
+def user_token(client):
     # Register and login a regular user
     username = f"user_{int(time.time() * 1000)}"
     client.post("/auth/register", json={"username": username, "password": "password"})
@@ -25,7 +22,7 @@ def user_token():
 
 
 @pytest.fixture
-def admin_token():
+def admin_token(client):
     # Use the seeded admin to create another admin for the test
     admin_login = client.post(
         "/auth/login", json={"username": "admin", "password": "adminpassword123"}
@@ -45,7 +42,7 @@ def admin_token():
     return res.json()["access_token"]
 
 
-def test_user_cannot_update_status(user_token):
+def test_user_cannot_update_status(client, user_token):
     # 1. Create appointment
     appt_data = {
         "date": "2027-01-01",
@@ -74,7 +71,7 @@ def test_user_cannot_update_status(user_token):
     assert res.json()["status"] == "Pending"
 
 
-def test_admin_can_update_status_only(admin_token, user_token):
+def test_admin_can_update_status_only(client, admin_token, user_token):
     # 1. User creates appointment
     appt_data = {
         "date": "2027-01-01",
@@ -112,7 +109,7 @@ def test_admin_can_update_status_only(admin_token, user_token):
     assert "Admins can only update the status field" in res.json()["detail"]
 
 
-def test_cross_user_access_blocked(user_token):
+def test_cross_user_access_blocked(client, user_token):
     # 1. User A (current user) creates appt
     # 2. Register User B
     user_b_name = f"user_b_{int(time.time() * 1000)}"

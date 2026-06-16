@@ -1,6 +1,4 @@
 import pytest
-from tests.flexible_client import FlexibleClient
-from main import app
 from models.database import Base
 from dependencies.dbclients import engine
 
@@ -10,11 +8,9 @@ pytestmark = pytest.mark.e2e
 # Setup test database
 Base.metadata.create_all(bind=engine)
 
-client = FlexibleClient(app)
-
 
 @pytest.fixture(scope="module")
-def test_user():
+def test_user(client):
     user_data = {
         "username": "testuser_crud",
         "password": "testpassword",
@@ -39,7 +35,7 @@ def test_user():
         return login_res.json()
 
 
-def test_create_appointment(test_user):
+def test_create_appointment(client, test_user):
     token = test_user["access_token"]
     appt_data = {
         "date": "2026-10-15",
@@ -62,7 +58,7 @@ def test_create_appointment(test_user):
     pytest.appt_id = data["id"]
 
 
-def test_read_appointments(test_user):
+def test_read_appointments(client, test_user):
     token = test_user["access_token"]
     response = client.get(
         "/appointments/", headers={"Authorization": f"Bearer {token}"}
@@ -74,7 +70,7 @@ def test_read_appointments(test_user):
     assert any(appt["id"] == pytest.appt_id for appt in data)
 
 
-def test_update_appointment(test_user):
+def test_update_appointment(client, test_user):
     token = test_user["access_token"]
     update_data = {"insect_id": 2}
     response = client.put(
@@ -89,7 +85,7 @@ def test_update_appointment(test_user):
     assert data["status"] == "Pending"
 
 
-def test_delete_appointment(test_user):
+def test_delete_appointment(client, test_user):
     token = test_user["access_token"]
     response = client.delete(
         f"/appointments/{pytest.appt_id}", headers={"Authorization": f"Bearer {token}"}
