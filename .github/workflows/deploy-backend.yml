@@ -152,7 +152,7 @@ jobs:
           echo "Testing live backend at: $BACKEND_URL/health"
           STATUS_CODE=$(curl -s -o /dev/null -w "%{http_code}" "$BACKEND_URL/health")
           if [ "$STATUS_CODE" -ne 200 ]; then
-            echo "❌ Live Backend returned status code $STATUS_CODE"
+            echo "ERROR: Live Backend returned status code $STATUS_CODE"
             exit 1
           fi
-          echo "✅ Live Backend is healthy!"
+          echo "SUCCESS: Live Backend is healthy!"
